@@ -2,10 +2,10 @@ import React from 'react'
 
 const Footer = () => {
     let footerStyle = {
-      position: "sticky",
-      top: "100vh",
       padding: "1rem",
       width: "100vw",
+      position: "sticky",
+      bottom: "0",
       backgroundColor: "white",
     };
     let footerStyleFooter = {
@@ -15,7 +15,7 @@ const Footer = () => {
     <div style={footerStyle}>
       <hr></hr>
       <footer style={footerStyleFooter}>
-        <p>Made with love in India</p>
+        <p>Made with love by UNOS</p>
         <p>Copyright 2022 ToDoApp</p>
       </footer>
     </div>
