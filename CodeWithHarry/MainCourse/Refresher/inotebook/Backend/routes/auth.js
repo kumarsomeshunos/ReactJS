@@ -1,4 +1,5 @@
 const User = require("./../models/User");
+const fetchUser = require("./../middleware/fetchUser")
 
 const express = require("express");
 const router = express.Router();
@@ -24,8 +25,12 @@ router.post("/createuser", body('name', "Enter a valid name").isLength({ min: 3 
                 const user = new User(req.body);
                 user.save()
                     .then(() => {
-
-                        var token = jwt.sign({ id: user.id }, 'secret$shhhh');
+                        const data = {
+                            user: {
+                                id: user.id
+                            }
+                        }
+                        var token = jwt.sign(data, 'secret$shhhh');
                         res.json(token);
                     })
                     .catch((error) => {
@@ -69,11 +74,17 @@ router.post("/login", body('email', "Enter a valid email").isEmail(),
                     if (!result) {
                         return res.status(400).json({ error: "Email or password incorrect." });
                     } else {
-                        var token = jwt.sign({ id: user.id }, 'secret$shhhh');
+                        const data = {
+                            user: {
+                                id: user.id
+                            }
+                        }
+                        var token = jwt.sign(data, 'secret$shhhh');
                         res.json(token);
                     }
                 })
                 .catch((error) => {
+                    console.log(error);
                     return res.status(400).json({ error: "Something went wrong at our end" });
                 })
         } catch (error) {
@@ -81,5 +92,17 @@ router.post("/login", body('email', "Enter a valid email").isEmail(),
             res.send("Something went wrong at our end");
         }
     })
+
+router.post("/getuser", fetchUser, async (req, res) => {
+    try {
+        userId = req.user.id;
+        const user = await User.findById(userId).select("-password");
+        console.log("userId: " + req.user.id + "|| user: " + user);
+        res.send(user);
+    } catch (error) {
+        console.log(error);
+        res.send("Something went wrong at our end");
+    }
+})
 
 module.exports = router;
